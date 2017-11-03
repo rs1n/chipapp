@@ -1,6 +1,10 @@
 package config
 
-import "github.com/rs1n/chipapp/src/config/environments"
+import (
+	"log"
+
+	"github.com/rs1n/chipapp/src/config/environments"
+)
 
 var config *Config
 
@@ -13,6 +17,7 @@ func GetConfig() *Config {
 
 func initializeConfig() {
 	config = &Config{
-		Config: environments.GetConfig(),
+		EnvConfig: environments.GetConfig(),
 	}
+	log.Printf("Using configuration: %+v", config)
 }

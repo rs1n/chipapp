@@ -8,7 +8,7 @@ import (
 
 type (
 	Environment struct {
-		render.Html
+		HtmlRenderer render.Html
 	}
 
 	HtmlRendererParams struct {
@@ -26,7 +26,7 @@ func NewEnvironment(rhp HtmlRendererParams) *Environment {
 	}
 
 	return &Environment{
-		Html: htmlRenderer,
+		HtmlRenderer: htmlRenderer,
 	}
 }
 
