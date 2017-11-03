@@ -5,6 +5,8 @@ import (
 
 	"github.com/go-chi/chi"
 	xhttp "github.com/rs1n/chip/x/net/http"
+
+	"github.com/rs1n/chipapp/src/config"
 )
 
 const shutdownTimeout = 10 * time.Second
@@ -19,7 +21,8 @@ func Run() {
 	serveRouter(router)
 }
 
-// serveRouter starts the server on the specified port.
+// serveRouter starts the server on specified port.
 func serveRouter(r chi.Router) {
-	xhttp.Serve(r, 3000, shutdownTimeout)
+	port := config.GetConfig().Port
+	xhttp.Serve(r, port, shutdownTimeout)
 }
