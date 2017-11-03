@@ -6,7 +6,8 @@ const (
 )
 
 type Config struct {
-	Port int
+	IsDebug bool
+	Port    int
 }
 
 func GetConfig() Config {
