@@ -32,7 +32,7 @@ func Run() {
 
 // initializeEnvironment creates a new application environment.
 func initializeEnvironment() {
-	cfg := config.GetConfig()
+	cfg := config.GetConfig().EnvConfig
 	environment.InitializeEnvironmentFor(
 		environment.HtmlRendererParams{
 			IsDebug:      cfg.IsDebug,
@@ -44,6 +44,6 @@ func initializeEnvironment() {
 
 // serveRouter starts the server on specified port.
 func serveRouter(r chi.Router) {
-	port := config.GetConfig().Port
-	xhttp.Serve(r, port, shutdownTimeout)
+	cfg := config.GetConfig().EnvConfig
+	xhttp.Serve(r, cfg.Port, shutdownTimeout)
 }

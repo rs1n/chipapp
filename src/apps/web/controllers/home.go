@@ -22,5 +22,8 @@ func (c *Home) Index(w http.ResponseWriter, r *http.Request) {
 	if name == "" {
 		name = "world"
 	}
-	render.Plain(w, http.StatusOK, "Hello, "+name)
+	c.Html(w, http.StatusOK, "web/home/index", render.M{
+		"pageTitle": "Welcome",
+		"name":      name,
+	})
 }
