@@ -1,5 +1,6 @@
 package environments
 
 var test = Config{
-	Port: 3000,
+	IsDebug: true,
+	Port:    3000,
 }

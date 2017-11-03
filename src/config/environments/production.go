@@ -1,5 +1,6 @@
 package environments
 
 var production = Config{
-	Port: 3000,
+	IsDebug: false,
+	Port:    3000,
 }
