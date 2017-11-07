@@ -7,7 +7,7 @@ import (
 	xhttp "github.com/rs1n/chip/x/net/http"
 
 	"github.com/rs1n/chipapp/src/config"
-	"github.com/rs1n/chipapp/src/environment"
+	"github.com/rs1n/chipapp/src/global"
 )
 
 const (
@@ -17,9 +17,9 @@ const (
 )
 
 func Run() {
-	// Create an application environment and schedule a cleaning.
-	initializeEnvironment()
-	defer environment.GetEnvironment().CleanUp()
+	// Create an application's global context and schedule a cleaning.
+	initGlobal()
+	defer global.GetGlobal().CleanUp()
 
 	// Create and bootstrap a router.
 	router := chi.NewRouter()
@@ -30,11 +30,11 @@ func Run() {
 	serveRouter(router)
 }
 
-// initializeEnvironment creates a new application environment.
-func initializeEnvironment() {
+// initGlobal creates a new application's global context.
+func initGlobal() {
 	cfg := config.GetConfig().EnvConfig
-	environment.InitializeEnvironmentFor(
-		environment.HtmlRendererParams{
+	global.InitGlobalFor(
+		global.HtmlRendererParams{
 			IsDebug:      cfg.IsDebug,
 			TemplateRoot: templateRoot,
 			TemplateExt:  templateExt,

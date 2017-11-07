@@ -10,12 +10,12 @@ var config *Config
 
 func GetConfig() *Config {
 	if config == nil {
-		initializeConfig()
+		initConfig()
 	}
 	return config
 }
 
-func initializeConfig() {
+func initConfig() {
 	config = &Config{
 		EnvConfig: environments.GetConfig(),
 	}
