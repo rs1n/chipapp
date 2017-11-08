@@ -4,31 +4,30 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
+	"github.com/rs1n/chip"
 	"github.com/rs1n/chip/render"
 
 	"github.com/rs1n/chipapp/src/apps/api/forms"
+	"github.com/rs1n/chipapp/src/core/validate"
 	"github.com/rs1n/chipapp/src/lib/models"
 	"github.com/rs1n/chipapp/src/lib/repositories"
 )
 
 type User struct {
-	*api
+	base
 
 	userRepository *repositories.User
 }
 
 func NewUser() *User {
 	return &User{
-		api:            &api{},
-		userRepository: repositories.NewUser(),
+		userRepository: &repositories.User{},
 	}
 }
 
 func (c *User) Index(w http.ResponseWriter, r *http.Request) {
 	users, err := c.userRepository.FindPage()
-	if err != nil {
-		panic(err)
-	}
+	chip.PanicIfError(err)
 	render.Json(w, http.StatusOK, users)
 }
 
@@ -84,9 +83,7 @@ func (c *User) fetchUser(w http.ResponseWriter, r *http.Request) *models.User {
 	id := chi.URLParam(r, "id")
 
 	user, err := c.userRepository.FindOneByHexId(id)
-	if err != nil {
-		panic(err)
-	}
+	chip.PanicIfError(err)
 	return user
 }
 
@@ -96,5 +93,10 @@ func (c *User) bindRequestToUserForm(
 	w http.ResponseWriter, r *http.Request,
 ) *forms.User {
 	userForm := forms.NewUser(r)
+
+	if err := validate.Struct(userForm); err != nil {
+		render.Json(w, http.StatusUnprocessableEntity, err)
+		chip.AbortHandler()
+	}
 	return userForm
 }

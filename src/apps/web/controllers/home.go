@@ -8,13 +8,7 @@ import (
 )
 
 type Home struct {
-	*web
-}
-
-func NewHome() *Home {
-	return &Home{
-		web: &web{},
-	}
+	base
 }
 
 func (c *Home) Index(w http.ResponseWriter, r *http.Request) {

@@ -4,11 +4,13 @@ import (
 	"log"
 
 	"github.com/rs1n/chip/render"
+	"github.com/rs1n/chip/validate"
 )
 
 type (
 	Global struct {
 		HtmlRenderer render.Html
+		Validate     *validate.Validate
 	}
 
 	HtmlRendererParams struct {
@@ -27,6 +29,7 @@ func NewGlobal(rhp HtmlRendererParams) *Global {
 
 	return &Global{
 		HtmlRenderer: htmlRenderer,
+		Validate:     validate.NewValidate(),
 	}
 }
 

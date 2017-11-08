@@ -12,7 +12,7 @@ type Application struct {
 
 func NewApplication() *Application {
 	return &Application{
-		homeController: controllers.NewHome(),
+		homeController: &controllers.Home{},
 	}
 }
 

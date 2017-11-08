@@ -1,4 +1,4 @@
 package controllers
 
 // Base 'api' application controller.
-type api struct{}
+type base struct{}

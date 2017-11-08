@@ -11,6 +11,8 @@ type (
 	}
 
 	User struct {
+		base
+
 		Id          string   `json:"id"`
 		Name        string   `json:"name"`
 		Profile     Profile  `json:"profile"`      // Embeds one profile.

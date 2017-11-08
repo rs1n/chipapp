@@ -15,7 +15,7 @@ type Application struct {
 
 func NewApplication() *Application {
 	return &Application{
-		pingController: controllers.NewPing(),
+		pingController: &controllers.Ping{},
 		userController: controllers.NewUser(),
 	}
 }

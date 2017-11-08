@@ -7,7 +7,7 @@ import (
 	xhttp "github.com/rs1n/chip/x/net/http"
 
 	"github.com/rs1n/chipapp/src/config"
-	"github.com/rs1n/chipapp/src/global"
+	"github.com/rs1n/chipapp/src/core/global"
 )
 
 const (

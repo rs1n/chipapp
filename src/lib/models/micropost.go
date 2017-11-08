@@ -1,6 +1,8 @@
 package models
 
 type Micropost struct {
+	base
+
 	Id      string `json:"id"`
 	Content string `json:"content"`
 	UserId  string `json:"user_id"` // Belongs to user.

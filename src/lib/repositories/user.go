@@ -4,10 +4,8 @@ import (
 	"github.com/rs1n/chipapp/src/lib/models"
 )
 
-type User struct{}
-
-func NewUser() *User {
-	return &User{}
+type User struct {
+	base
 }
 
 func (r *User) FindPage() ([]*models.User, error) {
@@ -46,16 +44,4 @@ func (r *User) FindOneByHexId(id string) (*models.User, error) {
 	}
 
 	return result, nil
-}
-
-func (r *User) Insert(user *models.User) error {
-	return nil
-}
-
-func (r *User) Update(user *models.User) error {
-	return nil
-}
-
-func (r *User) Remove(user *models.User) error {
-	return nil
 }
