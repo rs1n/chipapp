@@ -1,14 +1,16 @@
-package environment
+package global
 
 import (
 	"log"
 
 	"github.com/rs1n/chip/render"
+	"github.com/rs1n/chip/validate"
 )
 
 type (
-	Environment struct {
+	Global struct {
 		HtmlRenderer render.Html
+		Validate     *validate.Validate
 	}
 
 	HtmlRendererParams struct {
@@ -18,18 +20,19 @@ type (
 	}
 )
 
-func NewEnvironment(rhp HtmlRendererParams) *Environment {
+func NewGlobal(rhp HtmlRendererParams) *Global {
 	htmlRenderer := render.Html{
 		IsDebug:      rhp.IsDebug,
 		TemplateRoot: rhp.TemplateRoot,
 		TemplateExt:  rhp.TemplateExt,
 	}
 
-	return &Environment{
+	return &Global{
 		HtmlRenderer: htmlRenderer,
+		Validate:     validate.NewValidate(),
 	}
 }
 
-func (env *Environment) CleanUp() {
+func (g *Global) CleanUp() {
 	log.Println("Cleaning up...")
 }

@@ -7,13 +7,7 @@ import (
 )
 
 type Ping struct {
-	*api
-}
-
-func NewPing() *Ping {
-	return &Ping{
-		api: &api{},
-	}
+	controller
 }
 
 func (c *Ping) Index(w http.ResponseWriter, _ *http.Request) {
