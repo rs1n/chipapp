@@ -8,7 +8,7 @@ import (
 )
 
 type Home struct {
-	base
+	controller
 }
 
 func (c *Home) Index(w http.ResponseWriter, r *http.Request) {
@@ -16,7 +16,7 @@ func (c *Home) Index(w http.ResponseWriter, r *http.Request) {
 	if name == "" {
 		name = "world"
 	}
-	c.Html(w, http.StatusOK, "web/home/index", render.M{
+	c.RenderHtml(w, http.StatusOK, "web/home/index", render.M{
 		"pageTitle": "Welcome",
 		"name":      name,
 	})

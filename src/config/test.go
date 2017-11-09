@@ -1,4 +1,4 @@
-package environments
+package config
 
 var test = Config{
 	IsDebug: true,

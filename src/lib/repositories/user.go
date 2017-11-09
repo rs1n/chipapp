@@ -5,7 +5,7 @@ import (
 )
 
 type User struct {
-	base
+	repository
 }
 
 func (r *User) FindPage() ([]*models.User, error) {

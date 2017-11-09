@@ -8,13 +8,12 @@ import (
 	"github.com/rs1n/chip/render"
 
 	"github.com/rs1n/chipapp/src/apps/api/forms"
-	"github.com/rs1n/chipapp/src/core/validate"
 	"github.com/rs1n/chipapp/src/lib/models"
 	"github.com/rs1n/chipapp/src/lib/repositories"
 )
 
 type User struct {
-	base
+	controller
 
 	userRepository *repositories.User
 }
@@ -94,7 +93,7 @@ func (c *User) bindRequestToUserForm(
 ) *forms.User {
 	userForm := forms.NewUser(r)
 
-	if err := validate.Struct(userForm); err != nil {
+	if err := c.ValidateStruct(userForm); err != nil {
 		render.Json(w, http.StatusUnprocessableEntity, err)
 		chip.AbortHandler()
 	}

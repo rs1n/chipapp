@@ -3,13 +3,16 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/rs1n/chipapp/src/apps"
 	"github.com/rs1n/chipapp/src/core/global"
 )
 
 // Base 'web' application controller.
-type base struct{}
+type controller struct {
+	apps.Controller
+}
 
-func (c *base) Html(
+func (c *controller) RenderHtml(
 	w http.ResponseWriter, status int, templateName string, data interface{},
 ) {
 	g := global.GetGlobal()

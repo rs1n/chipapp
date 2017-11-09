@@ -14,7 +14,7 @@ type (
 	}
 
 	User struct {
-		base
+		form
 
 		Name        string          `json:"name" validate:"required,lte=100"`
 		Profile     Profile         `json:"profile"`      // Embeds one profile.

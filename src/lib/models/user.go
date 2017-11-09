@@ -11,7 +11,7 @@ type (
 	}
 
 	User struct {
-		base
+		model
 
 		Id          string   `json:"id"`
 		Name        string   `json:"name"`

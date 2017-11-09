@@ -1,7 +1,7 @@
 package models
 
 type Micropost struct {
-	base
+	model
 
 	Id      string `json:"id"`
 	Content string `json:"content"`

@@ -3,12 +3,15 @@ package api
 import (
 	"github.com/go-chi/chi"
 
+	"github.com/rs1n/chipapp/src/apps"
 	"github.com/rs1n/chipapp/src/apps/api/controllers"
 )
 
 const scope = "/api"
 
 type Application struct {
+	apps.Application
+
 	pingController *controllers.Ping
 	userController *controllers.User
 }
