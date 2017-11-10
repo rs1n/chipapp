@@ -11,9 +11,8 @@ type (
 	}
 
 	User struct {
-		model
+		Base `bson:",inline"`
 
-		Id          string   `json:"id"`
 		Name        string   `json:"name"`
 		Profile     Profile  `json:"profile"`      // Embeds one profile.
 		Images      []*Image `json:"images"`       // Embeds many images.

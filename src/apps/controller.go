@@ -1,6 +1,6 @@
 package apps
 
-import "github.com/rs1n/chipapp/src/core/global"
+import "github.com/skkv/chipapp/src/core/global"
 
 // Base controller.
 type Controller struct{}

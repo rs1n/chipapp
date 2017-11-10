@@ -4,11 +4,11 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
-	"github.com/rs1n/chip/render"
+	"github.com/skkv/chip/render"
 )
 
 type Home struct {
-	controller
+	base
 }
 
 func (c *Home) Index(w http.ResponseWriter, r *http.Request) {

@@ -3,11 +3,11 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/rs1n/chip/render"
+	"github.com/skkv/chip/render"
 )
 
 type Ping struct {
-	controller
+	base
 }
 
 func (c *Ping) Index(w http.ResponseWriter, _ *http.Request) {

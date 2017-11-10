@@ -4,11 +4,12 @@ import (
 	"time"
 
 	"github.com/go-chi/chi"
-	"github.com/rs1n/chip"
-	xhttp "github.com/rs1n/chip/x/net/http"
+	"github.com/skkv/chip"
+	"github.com/skkv/chip/mng"
+	xhttp "github.com/skkv/chip/x/net/http"
 
-	"github.com/rs1n/chipapp/src/config"
-	"github.com/rs1n/chipapp/src/core/global"
+	"github.com/skkv/chipapp/src/config"
+	"github.com/skkv/chipapp/src/core/global"
 )
 
 const (
@@ -41,17 +42,20 @@ func initGlobal() {
 			TemplateRoot: templateRoot,
 			TemplateExt:  templateExt,
 		},
+		cfg.Mongo,
 	)
 }
 
-// bootstrapRouter plugs standard middleware and serves static files.
+// bootstrapRouter plugs standard middleware, provides a Mongo session
+// and serves static files.
 func bootstrapRouter(r chi.Router) {
 	chip.BootstrapRouter(r)
+	mng.BootstrapRouter(r, global.GetGlobal().MgoSession)
+
 	chip.ServeRoot(r, publicRoot)
 }
 
 // serveRouter starts the server on specified port.
 func serveRouter(r chi.Router) {
-	cfg := config.GetConfig()
-	xhttp.Serve(r, cfg.Port, shutdownTimeout)
+	xhttp.Serve(r, config.GetConfig().Port, shutdownTimeout)
 }

@@ -1,4 +1,4 @@
 package forms
 
 // Base application form.
-type form struct{}
+type base struct{}

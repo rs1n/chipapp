@@ -1,8 +1,8 @@
 package controllers
 
-import "github.com/rs1n/chipapp/src/apps"
+import "github.com/skkv/chipapp/src/apps"
 
 // Base 'api' application controller.
-type controller struct {
+type base struct {
 	apps.Controller
 }
