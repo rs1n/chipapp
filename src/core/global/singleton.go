@@ -1,5 +1,7 @@
 package global
 
+import "gopkg.in/mgo.v2"
+
 var global *Global
 
 func GetGlobal() *Global {
@@ -9,9 +11,9 @@ func GetGlobal() *Global {
 	return global
 }
 
-func InitGlobalFor(rhp HtmlRendererParams) {
+func InitGlobalFor(rhp HtmlRendererParams, mgoDialInfo *mgo.DialInfo) {
 	if global != nil {
 		panic("global.InitGlobalFor: global is already initialized")
 	}
-	global = NewGlobal(rhp)
+	global = NewGlobal(rhp, mgoDialInfo)
 }

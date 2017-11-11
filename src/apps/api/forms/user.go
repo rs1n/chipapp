@@ -3,9 +3,9 @@ package forms
 import (
 	"net/http"
 
-	"github.com/rs1n/chip/render"
+	"github.com/sknv/chip/render"
 
-	"github.com/rs1n/chipapp/src/lib/models"
+	"github.com/sknv/chipapp/src/lib/models"
 )
 
 type (
@@ -14,7 +14,7 @@ type (
 	}
 
 	User struct {
-		form
+		base
 
 		Name        string          `json:"name" validate:"required,lte=100"`
 		Profile     Profile         `json:"profile"`      // Embeds one profile.

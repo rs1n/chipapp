@@ -1,47 +1,36 @@
 package repositories
 
 import (
-	"github.com/rs1n/chipapp/src/lib/models"
+	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
+
+	"github.com/sknv/chipapp/src/lib/models"
 )
 
+const userCollectionName = "users"
+
 type User struct {
-	repository
+	*Base
 }
 
-func (r *User) FindPage() ([]*models.User, error) {
-	result := []*models.User{
-		{
-			Id:   "abc123",
-			Name: "name",
-			Profile: models.Profile{
-				Email: "email@example.com",
-			},
-			Images: []*models.Image{
-				{
-					Src:   "/home/demodev/foo-thumb.png",
-					Style: "thumb",
-				},
-			},
-		},
+func NewUser() *User {
+	return &User{
+		Base: NewBase(userCollectionName),
 	}
-
-	return result, nil
 }
 
-func (r *User) FindOneByHexId(id string) (*models.User, error) {
-	result := &models.User{
-		Id:   "abc123",
-		Name: "name",
-		Profile: models.Profile{
-			Email: "email@example.com",
-		},
-		Images: []*models.Image{
-			{
-				Src:   "/home/demodev/foo-thumb.png",
-				Style: "thumb",
-			},
-		},
-	}
+func (u *User) FindPage(
+	session *mgo.Session, query bson.M, limit, skip int,
+) ([]*models.User, error) {
+	result := []*models.User{}
+	err := u.Base.FindPage(session, query, limit, skip, &result)
+	return result, err
+}
 
-	return result, nil
+func (u *User) FindOneByHexId(
+	session *mgo.Session, id string,
+) (*models.User, error) {
+	result := &models.User{}
+	err := u.Base.FindOneByHexId(session, id, result)
+	return result, err
 }

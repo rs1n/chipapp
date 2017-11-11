@@ -1,7 +1,5 @@
 package config
 
-import "log"
-
 var config *Config
 
 func GetConfig() *Config {
@@ -13,5 +11,4 @@ func GetConfig() *Config {
 
 func initConfig() {
 	config = NewConfig()
-	log.Printf("Using configuration: %+v", config)
 }

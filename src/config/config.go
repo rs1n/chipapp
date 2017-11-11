@@ -1,17 +1,24 @@
 package config
 
-import "os"
+import (
+	"os"
+
+	"gopkg.in/mgo.v2"
+)
 
 const (
 	envProduction = "production"
 	envTest       = "test"
 
-	envVarName = "CHIP_ENV"
+	envVarName       = "CHIP_ENV"
+	envVarDbPassword = "CHIPAPP_DATABASE_PASSWORD"
 )
 
 type Config struct {
 	IsDebug bool
 	Port    int
+
+	Mongo *mgo.DialInfo
 }
 
 func NewConfig() *Config {

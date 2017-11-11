@@ -3,8 +3,8 @@ package core
 import (
 	"github.com/go-chi/chi"
 
-	"github.com/rs1n/chipapp/src/apps/api"
-	"github.com/rs1n/chipapp/src/apps/web"
+	"github.com/sknv/chipapp/src/apps/api"
+	"github.com/sknv/chipapp/src/apps/web"
 )
 
 type Dispatcher struct {
