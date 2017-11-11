@@ -65,7 +65,7 @@ func (c *User) Create(w http.ResponseWriter, r *http.Request) {
 
 	// Check the violation of unique indexes and panic in case of other error.
 	if mgo.IsDup(err) {
-		render.Json(w, http.StatusUnprocessableEntity, err)
+		render.Plain(w, http.StatusUnprocessableEntity, err.Error())
 		chip.AbortHandler()
 	}
 	chip.PanicIfError(err)
@@ -92,7 +92,7 @@ func (c *User) Update(w http.ResponseWriter, r *http.Request) {
 		render.Status(w, http.StatusNotFound)
 		chip.AbortHandler()
 	} else if mgo.IsDup(err) {
-		render.Json(w, http.StatusUnprocessableEntity, err)
+		render.Plain(w, http.StatusUnprocessableEntity, err.Error())
 		chip.AbortHandler()
 	}
 	chip.PanicIfError(err)
