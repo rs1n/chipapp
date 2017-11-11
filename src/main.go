@@ -1,6 +1,6 @@
 package main
 
-import "github.com/skkv/chipapp/src/core"
+import "github.com/sknv/chipapp/src/core"
 
 func main() {
 	core.Run()

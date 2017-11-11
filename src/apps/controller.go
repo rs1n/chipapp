@@ -1,11 +1,9 @@
 package apps
 
-import "github.com/skkv/chipapp/src/core/global"
+import "github.com/sknv/chipapp/src/lib/services"
 
 // Base controller.
-type Controller struct{}
-
-func (c *Controller) ValidateStruct(s interface{}) error {
-	g := global.GetGlobal()
-	return g.Validate.Struct(s)
+type Controller struct {
+	services.Request
+	services.Validate
 }

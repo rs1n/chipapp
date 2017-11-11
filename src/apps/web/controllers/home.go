@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
-	"github.com/skkv/chip/render"
+	"github.com/sknv/chip/render"
 )
 
 type Home struct {

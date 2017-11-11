@@ -3,7 +3,7 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/skkv/chip/render"
+	"github.com/sknv/chip/render"
 )
 
 type Ping struct {

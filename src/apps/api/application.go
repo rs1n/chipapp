@@ -3,8 +3,8 @@ package api
 import (
 	"github.com/go-chi/chi"
 
-	"github.com/skkv/chipapp/src/apps"
-	"github.com/skkv/chipapp/src/apps/api/controllers"
+	"github.com/sknv/chipapp/src/apps"
+	"github.com/sknv/chipapp/src/apps/api/controllers"
 )
 
 const scope = "/api"

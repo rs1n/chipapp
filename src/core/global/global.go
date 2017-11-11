@@ -3,9 +3,9 @@ package global
 import (
 	"log"
 
-	"github.com/skkv/chip/mng"
-	"github.com/skkv/chip/render"
-	"github.com/skkv/chip/validate"
+	"github.com/sknv/chip/mng"
+	"github.com/sknv/chip/render"
+	"github.com/sknv/chip/validate"
 	"gopkg.in/mgo.v2"
 )
 

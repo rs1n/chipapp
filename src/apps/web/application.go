@@ -3,8 +3,8 @@ package web
 import (
 	"github.com/go-chi/chi"
 
-	"github.com/skkv/chipapp/src/apps"
-	"github.com/skkv/chipapp/src/apps/web/controllers"
+	"github.com/sknv/chipapp/src/apps"
+	"github.com/sknv/chipapp/src/apps/web/controllers"
 )
 
 type Application struct {

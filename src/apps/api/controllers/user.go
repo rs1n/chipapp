@@ -4,15 +4,14 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
-	"github.com/skkv/chip"
-	"github.com/skkv/chip/mng"
-	"github.com/skkv/chip/render"
+	"github.com/sknv/chip"
+	"github.com/sknv/chip/mng"
+	"github.com/sknv/chip/render"
 	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 
-	"github.com/skkv/chipapp/src/apps/api/forms"
-	"github.com/skkv/chipapp/src/lib/models"
-	"github.com/skkv/chipapp/src/lib/repositories"
+	"github.com/sknv/chipapp/src/apps/api/forms"
+	"github.com/sknv/chipapp/src/lib/models"
+	"github.com/sknv/chipapp/src/lib/repositories"
 )
 
 type User struct {
@@ -28,10 +27,18 @@ func NewUser() *User {
 }
 
 func (c *User) Index(w http.ResponseWriter, r *http.Request) {
+	// Parse request for fetching params.
+	fp, err := c.GetFetchingParamsForRequest(r)
+	if err != nil {
+		render.Status(w, http.StatusBadRequest)
+		chip.AbortHandler()
+	}
 	mgoSession := mng.GetMgoSessionForRequest(r)
 
 	// Fetch and paginate users.
-	users, err := c.userRepository.FindPage(mgoSession, bson.M{}, 0, 0)
+	users, err := c.userRepository.FindPage(
+		mgoSession, fp.Query, fp.Limit, fp.Skip,
+	)
 	chip.PanicIfError(err)
 	render.Json(w, http.StatusOK, users)
 }
@@ -77,7 +84,7 @@ func (c *User) Update(w http.ResponseWriter, r *http.Request) {
 
 	// Fill the model and update the db.
 	userForm.FillModel(user)
-	err := c.userRepository.Update(mgoSession, user)
+	err := c.userRepository.UpdateDoc(mgoSession, user)
 
 	// Check the document existence, violation of unique indexes
 	// and panic in case of other error.
@@ -98,7 +105,7 @@ func (c *User) Destroy(w http.ResponseWriter, r *http.Request) {
 
 	// Fetch the user by id and remote it.
 	user := c.fetchUser(w, r, mgoSession)
-	err := c.userRepository.Remove(mgoSession, user)
+	err := c.userRepository.RemoveDoc(mgoSession, user)
 
 	// Check the document existence and panic in case of other error.
 	if mng.IsErrNotFound(err) {

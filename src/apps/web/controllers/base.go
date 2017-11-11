@@ -3,8 +3,8 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/skkv/chipapp/src/apps"
-	"github.com/skkv/chipapp/src/core/global"
+	"github.com/sknv/chipapp/src/apps"
+	"github.com/sknv/chipapp/src/core/global"
 )
 
 // Base 'web' application controller.

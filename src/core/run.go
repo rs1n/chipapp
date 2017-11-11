@@ -4,12 +4,12 @@ import (
 	"time"
 
 	"github.com/go-chi/chi"
-	"github.com/skkv/chip"
-	"github.com/skkv/chip/mng"
-	xhttp "github.com/skkv/chip/x/net/http"
+	"github.com/sknv/chip"
+	"github.com/sknv/chip/mng"
+	xhttp "github.com/sknv/chip/x/net/http"
 
-	"github.com/skkv/chipapp/src/config"
-	"github.com/skkv/chipapp/src/core/global"
+	"github.com/sknv/chipapp/src/config"
+	"github.com/sknv/chipapp/src/core/global"
 )
 
 const (

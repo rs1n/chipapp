@@ -3,9 +3,9 @@ package forms
 import (
 	"net/http"
 
-	"github.com/skkv/chip/render"
+	"github.com/sknv/chip/render"
 
-	"github.com/skkv/chipapp/src/lib/models"
+	"github.com/sknv/chipapp/src/lib/models"
 )
 
 type (

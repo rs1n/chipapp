@@ -1,6 +1,6 @@
 package controllers
 
-import "github.com/skkv/chipapp/src/apps"
+import "github.com/sknv/chipapp/src/apps"
 
 // Base 'api' application controller.
 type base struct {
