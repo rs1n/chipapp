@@ -11,9 +11,9 @@ func GetGlobal() *Global {
 	return global
 }
 
-func InitGlobalFor(rhp HtmlRendererParams, mgoDialInfo *mgo.DialInfo) {
+func InitGlobalFor(hrp HtmlRenderParams, mgoDialInfo *mgo.DialInfo) {
 	if global != nil {
 		panic("global.InitGlobalFor: global is already initialized")
 	}
-	global = NewGlobal(rhp, mgoDialInfo)
+	global = NewGlobal(hrp, mgoDialInfo)
 }

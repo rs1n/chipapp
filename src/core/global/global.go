@@ -16,18 +16,18 @@ type (
 		MgoSession   *mgo.Session
 	}
 
-	HtmlRendererParams struct {
+	HtmlRenderParams struct {
 		IsDebug      bool
 		TemplateRoot string
 		TemplateExt  string
 	}
 )
 
-func NewGlobal(rhp HtmlRendererParams, mgoDialInfo *mgo.DialInfo) *Global {
+func NewGlobal(hrp HtmlRenderParams, mgoDialInfo *mgo.DialInfo) *Global {
 	htmlRenderer := &render.Html{
-		IsDebug:      rhp.IsDebug,
-		TemplateRoot: rhp.TemplateRoot,
-		TemplateExt:  rhp.TemplateExt,
+		IsDebug:      hrp.IsDebug,
+		TemplateRoot: hrp.TemplateRoot,
+		TemplateExt:  hrp.TemplateExt,
 	}
 
 	return &Global{

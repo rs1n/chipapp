@@ -28,22 +28,20 @@ func Run() {
 	router := chi.NewRouter()
 	bootstrapRouter(router)
 
-	// Dispatch requests and serve the router.
+	// Dispatch requests and serve the router on specified port.
 	NewDispatcher().Dispatch(router)
-	serveRouter(router)
+	xhttp.Serve(router, config.GetConfig().Port, shutdownTimeout)
 }
 
 // initGlobal creates a new application's global context.
 func initGlobal() {
 	cfg := config.GetConfig()
-	global.InitGlobalFor(
-		global.HtmlRendererParams{
-			IsDebug:      cfg.IsDebug,
-			TemplateRoot: templateRoot,
-			TemplateExt:  templateExt,
-		},
-		cfg.Mongo,
-	)
+	hrp := global.HtmlRenderParams{
+		IsDebug:      cfg.IsDebug,
+		TemplateRoot: templateRoot,
+		TemplateExt:  templateExt,
+	}
+	global.InitGlobalFor(hrp, cfg.Mongo)
 }
 
 // bootstrapRouter plugs standard middleware, provides a Mongo session
@@ -53,9 +51,4 @@ func bootstrapRouter(r chi.Router) {
 	mng.BootstrapRouter(r, global.GetGlobal().MgoSession)
 
 	chip.ServeRoot(r, publicRoot)
-}
-
-// serveRouter starts the server on specified port.
-func serveRouter(r chi.Router) {
-	xhttp.Serve(r, config.GetConfig().Port, shutdownTimeout)
 }
