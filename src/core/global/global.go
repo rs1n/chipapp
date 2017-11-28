@@ -3,10 +3,10 @@ package global
 import (
 	"log"
 
+	"github.com/globalsign/mgo"
 	"github.com/sknv/chip/mng"
 	"github.com/sknv/chip/render"
 	"github.com/sknv/chip/validate"
-	"gopkg.in/mgo.v2"
 )
 
 type (

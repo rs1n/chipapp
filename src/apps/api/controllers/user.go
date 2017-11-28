@@ -3,11 +3,11 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/globalsign/mgo"
 	"github.com/go-chi/chi"
 	"github.com/sknv/chip"
 	"github.com/sknv/chip/mng"
 	"github.com/sknv/chip/render"
-	"gopkg.in/mgo.v2"
 
 	"github.com/sknv/chipapp/src/apps/api/forms"
 	"github.com/sknv/chipapp/src/lib/models"
