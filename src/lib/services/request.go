@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/globalsign/mgo/bson"
 	"github.com/sknv/chip/mng"
-	"gopkg.in/mgo.v2/bson"
 )
 
 const (

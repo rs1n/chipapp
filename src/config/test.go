@@ -3,7 +3,7 @@ package config
 import (
 	"time"
 
-	"gopkg.in/mgo.v2"
+	"github.com/globalsign/mgo"
 )
 
 var test = Config{

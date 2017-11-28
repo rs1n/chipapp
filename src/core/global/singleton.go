@@ -1,6 +1,6 @@
 package global
 
-import "gopkg.in/mgo.v2"
+import "github.com/globalsign/mgo"
 
 var global *Global
 
