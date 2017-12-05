@@ -5,8 +5,8 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/sknv/chip"
-	"github.com/sknv/chip/mng"
 	xhttp "github.com/sknv/chip/x/net/http"
+	"github.com/sknv/mng"
 
 	"github.com/sknv/chipapp/src/config"
 	"github.com/sknv/chipapp/src/core/global"

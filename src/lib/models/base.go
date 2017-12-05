@@ -1,6 +1,6 @@
 package models
 
-import "github.com/sknv/chip/mng/odm/document"
+import "github.com/sknv/mng/odm/document"
 
 // Base application model.
 type Base struct {

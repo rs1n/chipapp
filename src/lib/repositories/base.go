@@ -3,7 +3,7 @@ package repositories
 import (
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
-	"github.com/sknv/chip/mng/odm/repository"
+	"github.com/sknv/mng/odm/repository"
 
 	"github.com/sknv/chipapp/src/config"
 )

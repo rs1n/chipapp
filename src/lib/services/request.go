@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"github.com/globalsign/mgo/bson"
-	"github.com/sknv/chip/mng"
+	"github.com/sknv/mng"
 )
 
 const (

@@ -6,8 +6,8 @@ import (
 	"github.com/globalsign/mgo"
 	"github.com/go-chi/chi"
 	"github.com/sknv/chip"
-	"github.com/sknv/chip/mng"
 	"github.com/sknv/chip/render"
+	"github.com/sknv/mng"
 
 	"github.com/sknv/chipapp/src/apps/api/forms"
 	"github.com/sknv/chipapp/src/lib/models"
