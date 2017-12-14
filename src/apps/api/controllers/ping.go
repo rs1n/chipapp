@@ -7,7 +7,7 @@ import (
 )
 
 type Ping struct {
-	base
+	Base
 }
 
 func (c *Ping) Index(w http.ResponseWriter, _ *http.Request) {

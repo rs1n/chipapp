@@ -1,8 +1,8 @@
 package models
 
-import "github.com/sknv/mng/odm/document"
+import "github.com/sknv/pgup/orm/record"
 
 // Base application model.
 type Base struct {
-	document.Timestampable `bson:",inline"`
+	record.Timestampable `db:",inline"`
 }

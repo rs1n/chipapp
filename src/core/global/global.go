@@ -3,17 +3,18 @@ package global
 import (
 	"log"
 
-	"github.com/globalsign/mgo"
+	"github.com/sknv/chip"
 	"github.com/sknv/chip/render"
 	"github.com/sknv/chip/validate"
-	"github.com/sknv/mng"
+	"upper.io/db.v3"
+	"upper.io/db.v3/postgresql"
 )
 
 type (
 	Global struct {
-		HtmlRenderer *render.Html
+		HTMLRenderer *render.Html
 		Validate     *validate.Validate
-		MgoSession   *mgo.Session
+		PgSession    db.Database
 	}
 
 	HtmlRenderParams struct {
@@ -23,27 +24,32 @@ type (
 	}
 )
 
-func NewGlobal(hrp HtmlRenderParams, mgoDialInfo *mgo.DialInfo) *Global {
+func NewGlobal(
+	hrp HtmlRenderParams, connectionURL *postgresql.ConnectionURL,
+) *Global {
 	htmlRenderer := &render.Html{
 		IsDebug:      hrp.IsDebug,
 		TemplateRoot: hrp.TemplateRoot,
 		TemplateExt:  hrp.TemplateExt,
 	}
 
+	pgSession, err := postgresql.Open(connectionURL)
+	chip.PanicIfError(err)
+
 	return &Global{
-		HtmlRenderer: htmlRenderer,
+		HTMLRenderer: htmlRenderer,
 		Validate:     validate.NewValidate(),
-		MgoSession:   mng.MustDial(mgoDialInfo),
+		PgSession:    pgSession,
 	}
 }
 
 func (g *Global) CleanUp() {
 	log.Println("Cleaning up...")
-	g.cleanMongo()
+	g.cleanPostgres()
 }
 
-func (g *Global) cleanMongo() {
-	if g.MgoSession != nil {
-		g.MgoSession.Close()
+func (g *Global) cleanPostgres() {
+	if g.PgSession != nil {
+		g.PgSession.Close()
 	}
 }

@@ -6,7 +6,6 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/sknv/chip"
 	xhttp "github.com/sknv/chip/x/net/http"
-	"github.com/sknv/mng"
 
 	"github.com/sknv/chipapp/src/config"
 	"github.com/sknv/chipapp/src/core/global"
@@ -41,14 +40,12 @@ func initGlobal() {
 		TemplateRoot: templateRoot,
 		TemplateExt:  templateExt,
 	}
-	global.InitGlobalFor(hrp, cfg.Mongo)
+	global.InitGlobalFor(hrp, cfg.Postgres)
 }
 
 // bootstrapRouter plugs standard middleware, provides a Mongo session
 // and serves static files.
 func bootstrapRouter(r chi.Router) {
 	chip.BootstrapRouter(r)
-	mng.BootstrapRouter(r, global.GetGlobal().MgoSession)
-
 	chip.ServeRoot(r, publicRoot)
 }
