@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-# Bootstraps production Mongo database.
+# Bootstraps production PostgreSQL database.
 
-mongo demoprod \
-  --authenticationDatabase "demoprod" -u "demoprod" -p "$CHIPAPP_DATABASE_PASSWORD" \
-  ./bootstrap.js
+goose \
+  -dir ./migrate \
+  postgres \
+  "dbname=demoprod user=demoprod password=$CHIPAPP_DATABASE_PASSWORD sslmode=disable" \
+  up

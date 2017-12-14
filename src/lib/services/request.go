@@ -4,21 +4,22 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/globalsign/mgo/bson"
-	"github.com/sknv/mng"
+	"github.com/sknv/pgup"
+	"github.com/sknv/pgup/orm/repository"
+	"upper.io/db.v3"
 )
 
 const (
-	queryParamName = "query"
-	limitParamName = "limit"
-	skipParamName  = "skip"
+	queryParamName  = "query"
+	limitParamName  = "limit"
+	offsetParamName = "offset"
+	orderParamName  = "order"
 )
 
 type (
 	FetchingParams struct {
-		Query bson.M
-		Limit int
-		Skip  int
+		Query        db.Cond
+		PagingParams repository.PagingParams
 	}
 
 	Request struct{}
@@ -29,13 +30,13 @@ func (_ *Request) GetFetchingParamsForRequest(
 ) (*FetchingParams, error) {
 	params := r.URL.Query()
 
-	// Decode Mongo query or use an empty one.
-	query, err := mng.ParseQuery(params.Get(queryParamName))
+	// Parse query or use an empty one.
+	query, err := pgup.ParseQuery(params.Get(queryParamName))
 	if err != nil {
 		return nil, err
 	}
 
-	// Parse 'limit' and 'skip' parameters.
+	// Parse 'limit' and 'offset' parameters.
 	sLimit := params.Get(limitParamName)
 	if sLimit == "" {
 		sLimit = "0"
@@ -45,19 +46,28 @@ func (_ *Request) GetFetchingParamsForRequest(
 		return nil, err
 	}
 
-	sSkip := params.Get(skipParamName)
-	if sSkip == "" {
-		sSkip = "0"
+	sOffset := params.Get(offsetParamName)
+	if sOffset == "" {
+		sOffset = "0"
 	}
-	skip, err := strconv.Atoi(sSkip)
+	offset, err := strconv.Atoi(sOffset)
+	if err != nil {
+		return nil, err
+	}
+
+	// Parse order or use an empty one.
+	order, err := pgup.ParseOrder(params.Get(orderParamName))
 	if err != nil {
 		return nil, err
 	}
 
 	result := &FetchingParams{
 		Query: query,
-		Limit: limit,
-		Skip:  skip,
+		PagingParams: repository.PagingParams{
+			Limit:  limit,
+			Offset: offset,
+			Order:  order,
+		},
 	}
 	return result, nil
 }

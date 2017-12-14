@@ -1,6 +1,6 @@
 package global
 
-import "github.com/globalsign/mgo"
+import "upper.io/db.v3/postgresql"
 
 var global *Global
 
@@ -11,9 +11,11 @@ func GetGlobal() *Global {
 	return global
 }
 
-func InitGlobalFor(hrp HtmlRenderParams, mgoDialInfo *mgo.DialInfo) {
+func InitGlobalFor(
+	hrp HtmlRenderParams, connectionURL *postgresql.ConnectionURL,
+) {
 	if global != nil {
 		panic("global.InitGlobalFor: global is already initialized")
 	}
-	global = NewGlobal(hrp, mgoDialInfo)
+	global = NewGlobal(hrp, connectionURL)
 }

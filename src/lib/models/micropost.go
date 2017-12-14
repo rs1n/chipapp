@@ -1,10 +1,10 @@
 package models
 
 type Micropost struct {
-	Base `bson:",inline"`
+	Base `db:",inline"`
 
-	Content string `json:"content"`
-	UserId  string `json:"user_id"` // Belongs to user.
+	Content string `db:"content" json:"content"`
+	UserId  string `db:"user_id" json:"user_id"` // Belongs to user.
 
 	// Virtual fields.
 	User *User `json:"user,omitempty"` // Belongs to user.

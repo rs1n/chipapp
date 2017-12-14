@@ -1,8 +1,7 @@
 package repositories
 
 import (
-	"github.com/globalsign/mgo"
-	"github.com/globalsign/mgo/bson"
+	"github.com/sknv/pgup/orm/repository"
 
 	"github.com/sknv/chipapp/src/lib/models"
 )
@@ -20,17 +19,15 @@ func NewUser() *User {
 }
 
 func (u *User) FindPage(
-	session *mgo.Session, query bson.M, limit, skip int,
+	params repository.PagingParams, query ...interface{},
 ) ([]*models.User, error) {
-	result := []*models.User{}
-	err := u.Base.FindPage(session, query, limit, skip, &result)
+	var result []*models.User
+	err := u.Base.FindPage(&result, params, query...)
 	return result, err
 }
 
-func (u *User) FindOneByHexId(
-	session *mgo.Session, id string,
-) (*models.User, error) {
+func (u *User) FindOneById(id int64) (*models.User, error) {
 	result := &models.User{}
-	err := u.Base.FindOneByHexId(session, id, result)
+	err := u.Base.FindOneById(result, id)
 	return result, err
 }

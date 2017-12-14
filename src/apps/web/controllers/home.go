@@ -8,7 +8,7 @@ import (
 )
 
 type Home struct {
-	base
+	Base
 }
 
 func (c *Home) Index(w http.ResponseWriter, r *http.Request) {

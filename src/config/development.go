@@ -1,20 +1,15 @@
 package config
 
-import (
-	"time"
-
-	"github.com/globalsign/mgo"
-)
+import "upper.io/db.v3/postgresql"
 
 var development = Config{
 	IsDebug: true,
 	Port:    3000,
 
-	Mongo: &mgo.DialInfo{
-		Addrs:    []string{"localhost:27017"},
+	Postgres: &postgresql.ConnectionURL{
+		Host:     "localhost",
 		Database: "demodev",
-		Username: "demodev",
+		User:     "demodev",
 		Password: "123",
-		Timeout:  5 * time.Second,
 	},
 }
