@@ -1,4 +1,4 @@
-package global
+package core
 
 import (
 	"log"
@@ -11,22 +11,22 @@ import (
 )
 
 type (
-	Global struct {
-		HTMLRenderer *render.Html
-		Validate     *validate.Validate
-		PgSession    db.Database
-	}
-
 	HtmlRenderParams struct {
 		IsDebug      bool
 		TemplateRoot string
 		TemplateExt  string
 	}
+
+	ServiceProvider struct {
+		HtmlRender *render.Html
+		*validate.Validate
+		PgSession  db.Database
+	}
 )
 
-func NewGlobal(
+func NewServiceProvider(
 	hrp HtmlRenderParams, connectionURL *postgresql.ConnectionURL,
-) *Global {
+) *ServiceProvider {
 	htmlRenderer := &render.Html{
 		IsDebug:      hrp.IsDebug,
 		TemplateRoot: hrp.TemplateRoot,
@@ -36,20 +36,20 @@ func NewGlobal(
 	pgSession, err := postgresql.Open(connectionURL)
 	chip.PanicIfError(err)
 
-	return &Global{
-		HTMLRenderer: htmlRenderer,
-		Validate:     validate.NewValidate(),
-		PgSession:    pgSession,
+	return &ServiceProvider{
+		HtmlRender: htmlRenderer,
+		Validate:   validate.NewValidate(),
+		PgSession:  pgSession,
 	}
 }
 
-func (g *Global) CleanUp() {
+func (sp *ServiceProvider) CleanUp() {
 	log.Println("Cleaning up...")
-	g.cleanPostgres()
+	sp.cleanPostgres()
 }
 
-func (g *Global) cleanPostgres() {
-	if g.PgSession != nil {
-		g.PgSession.Close()
+func (sp *ServiceProvider) cleanPostgres() {
+	if sp.PgSession != nil {
+		sp.PgSession.Close()
 	}
 }

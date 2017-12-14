@@ -5,10 +5,17 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/sknv/chip/render"
+	"github.com/sknv/chip/validate"
 )
 
 type Home struct {
-	Base
+	*Base
+}
+
+func NewHome(htmlRender *render.Html, validate *validate.Validate) *Home {
+	return &Home{
+		Base: NewBase(htmlRender, validate),
+	}
 }
 
 func (c *Home) Index(w http.ResponseWriter, r *http.Request) {
@@ -16,7 +23,7 @@ func (c *Home) Index(w http.ResponseWriter, r *http.Request) {
 	if name == "" {
 		name = "world"
 	}
-	c.RenderHtml(w, http.StatusOK, "web/home/index", render.M{
+	c.HtmlRender.Html(w, http.StatusOK, "web/home/index", render.M{
 		"pageTitle": "Welcome",
 		"name":      name,
 	})

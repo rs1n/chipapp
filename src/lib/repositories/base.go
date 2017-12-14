@@ -2,8 +2,7 @@ package repositories
 
 import (
 	"github.com/sknv/pgup/orm/repository"
-
-	"github.com/sknv/chipapp/src/core/global"
+	"upper.io/db.v3"
 )
 
 // Base application repository.
@@ -11,10 +10,10 @@ type Base struct {
 	*repository.Base
 }
 
-func NewBase(collectionName string) *Base {
+func NewBase(session db.Database, collectionName string) *Base {
 	return &Base{
 		Base: &repository.Base{
-			Session:        global.GetGlobal().PgSession,
+			Session:        session,
 			CollectionName: collectionName,
 		},
 	}

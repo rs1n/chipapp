@@ -7,7 +7,9 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/sknv/chip"
 	"github.com/sknv/chip/render"
+	"github.com/sknv/chip/validate"
 	"github.com/sknv/pgup"
+	"upper.io/db.v3"
 
 	"github.com/sknv/chipapp/src/apps/api/forms"
 	"github.com/sknv/chipapp/src/lib/models"
@@ -15,14 +17,15 @@ import (
 )
 
 type User struct {
-	Base
+	*Base
 
 	userRepository *repositories.User
 }
 
-func NewUser() *User {
+func NewUser(session db.Database, validate *validate.Validate) *User {
 	return &User{
-		userRepository: repositories.NewUser(),
+		Base:           NewBase(validate),
+		userRepository: repositories.NewUser(session),
 	}
 }
 
@@ -133,8 +136,12 @@ func (c *User) fetchUser(w http.ResponseWriter, r *http.Request) *models.User {
 func (c *User) bindRequestToUserForm(
 	w http.ResponseWriter, r *http.Request,
 ) *forms.User {
-	userForm := forms.NewUser(r)
-	if err := c.ValidateStruct(userForm); err != nil {
+	userForm, err := forms.NewUser(r)
+	if err != nil {
+		render.Status(w, http.StatusBadRequest)
+		chip.AbortHandler()
+	}
+	if err := c.Validate.Struct(userForm); err != nil {
 		render.Json(w, http.StatusUnprocessableEntity, err)
 		chip.AbortHandler()
 	}

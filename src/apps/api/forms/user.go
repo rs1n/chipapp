@@ -29,10 +29,10 @@ type (
 	}
 )
 
-func NewUser(r *http.Request) *User {
+func NewUser(r *http.Request) (*User, error) {
 	user := &User{}
-	render.BindJson(r, user)
-	return user
+	err := render.BindJson(r, user)
+	return user, err
 }
 
 func (f *User) FillModel(user *models.User) {
