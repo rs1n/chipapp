@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"github.com/sknv/pgup/orm/repository"
+	"upper.io/db.v3"
 
 	"github.com/sknv/chipapp/src/lib/models"
 )
@@ -12,9 +13,9 @@ type User struct {
 	*Base
 }
 
-func NewUser() *User {
+func NewUser(session db.Database) *User {
 	return &User{
-		Base: NewBase(userCollectionName),
+		Base: NewBase(session, userCollectionName),
 	}
 }
 

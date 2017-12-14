@@ -8,7 +8,6 @@ import (
 	xhttp "github.com/sknv/chip/x/net/http"
 
 	"github.com/sknv/chipapp/src/config"
-	"github.com/sknv/chipapp/src/core/global"
 )
 
 const (
@@ -19,28 +18,34 @@ const (
 )
 
 func Run() {
+	// Load the environment configuration.
+	cfg := config.NewConfig()
+
 	// Create an application's global context and schedule a cleaning.
-	initGlobal()
-	defer global.GetGlobal().CleanUp()
+	serviceProvider := initServiceProvider(cfg)
+	defer serviceProvider.CleanUp()
 
 	// Create and bootstrap a router.
 	router := chi.NewRouter()
 	bootstrapRouter(router)
 
 	// Dispatch requests and serve the router on specified port.
-	NewDispatcher().Dispatch(router)
-	xhttp.Serve(router, config.GetConfig().Port, shutdownTimeout)
+	NewDispatcher(
+		serviceProvider.HtmlRender,
+		serviceProvider.PgSession,
+		serviceProvider.Validate,
+	).Dispatch(router)
+	xhttp.Serve(router, cfg.Port, shutdownTimeout)
 }
 
-// initGlobal creates a new application's global context.
-func initGlobal() {
-	cfg := config.GetConfig()
-	hrp := global.HtmlRenderParams{
+// initServiceProvider creates a new application's global context.
+func initServiceProvider(cfg *config.Config) *ServiceProvider {
+	hrp := HtmlRenderParams{
 		IsDebug:      cfg.IsDebug,
 		TemplateRoot: templateRoot,
 		TemplateExt:  templateExt,
 	}
-	global.InitGlobalFor(hrp, cfg.Postgres)
+	return NewServiceProvider(hrp, cfg.Postgres)
 }
 
 // bootstrapRouter plugs standard middleware, provides a Mongo session

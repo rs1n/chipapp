@@ -1,20 +1,22 @@
 package controllers
 
 import (
-	"net/http"
+	"github.com/sknv/chip/render"
+	"github.com/sknv/chip/validate"
 
 	"github.com/sknv/chipapp/src/apps"
-	"github.com/sknv/chipapp/src/core/global"
 )
 
 // Base 'web' application controller.
 type Base struct {
-	apps.Controller
+	*apps.Controller
+
+	HtmlRender *render.Html
 }
 
-func (c *Base) RenderHtml(
-	w http.ResponseWriter, status int, templateName string, data interface{},
-) {
-	g := global.GetGlobal()
-	g.HTMLRenderer.Html(w, status, templateName, data)
+func NewBase(htmlRender *render.Html, validate *validate.Validate) *Base {
+	return &Base{
+		Controller: apps.NewController(validate),
+		HtmlRender: htmlRender,
+	}
 }
