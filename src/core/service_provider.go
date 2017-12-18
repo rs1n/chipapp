@@ -3,11 +3,10 @@ package core
 import (
 	"log"
 
-	"github.com/sknv/chip"
+	"github.com/globalsign/mgo"
 	"github.com/sknv/chip/render"
 	"github.com/sknv/chip/validate"
-	"upper.io/db.v3"
-	"upper.io/db.v3/postgresql"
+	"github.com/sknv/mng"
 )
 
 type (
@@ -20,36 +19,33 @@ type (
 	ServiceProvider struct {
 		HtmlRender *render.Html
 		*validate.Validate
-		PgSession  db.Database
+		MgoSession *mgo.Session
 	}
 )
 
 func NewServiceProvider(
-	hrp HtmlRenderParams, connectionURL *postgresql.ConnectionURL,
+	hrp HtmlRenderParams, mgoDialInfo *mgo.DialInfo,
 ) *ServiceProvider {
-	htmlRenderer := &render.Html{
+	htmlRender := &render.Html{
 		IsDebug:      hrp.IsDebug,
 		TemplateRoot: hrp.TemplateRoot,
 		TemplateExt:  hrp.TemplateExt,
 	}
 
-	pgSession, err := postgresql.Open(connectionURL)
-	chip.PanicIfError(err)
-
 	return &ServiceProvider{
-		HtmlRender: htmlRenderer,
+		HtmlRender: htmlRender,
 		Validate:   validate.NewValidate(),
-		PgSession:  pgSession,
+		MgoSession: mng.MustDial(mgoDialInfo),
 	}
 }
 
 func (sp *ServiceProvider) CleanUp() {
 	log.Println("Cleaning up...")
-	sp.cleanPostgres()
+	sp.cleanMongo()
 }
 
-func (sp *ServiceProvider) cleanPostgres() {
-	if sp.PgSession != nil {
-		sp.PgSession.Close()
+func (sp *ServiceProvider) cleanMongo() {
+	if sp.MgoSession != nil {
+		sp.MgoSession.Close()
 	}
 }

@@ -1,34 +1,37 @@
 package repositories
 
 import (
-	"github.com/sknv/pgup/orm/repository"
-	"upper.io/db.v3"
+	"github.com/globalsign/mgo"
+	"github.com/globalsign/mgo/bson"
+	"github.com/sknv/mng/odm/repository"
 
 	"github.com/sknv/chipapp/src/lib/models"
 )
 
-const userCollectionName = "users"
+const collectionUsers = "users"
 
 type User struct {
 	*Base
 }
 
-func NewUser(session db.Database) *User {
+func NewUser() *User {
 	return &User{
-		Base: NewBase(session, userCollectionName),
+		Base: NewBase(collectionUsers),
 	}
 }
 
 func (u *User) FindPage(
-	params repository.PagingParams, query ...interface{},
+	session *mgo.Session, query bson.M, params repository.PagingParams,
 ) ([]*models.User, error) {
 	var result []*models.User
-	err := u.Base.FindPage(&result, params, query...)
+	err := u.Base.FindPage(session, query, params, &result)
 	return result, err
 }
 
-func (u *User) FindOneById(id int64) (*models.User, error) {
+func (u *User) FindOneById(
+	session *mgo.Session, id string,
+) (*models.User, error) {
 	result := &models.User{}
-	err := u.Base.FindOneById(result, id)
+	err := u.Base.FindOneById(session, id, result)
 	return result, err
 }

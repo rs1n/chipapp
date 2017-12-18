@@ -2,14 +2,13 @@ package controllers
 
 import (
 	"net/http"
-	"strconv"
 
+	"github.com/globalsign/mgo"
 	"github.com/go-chi/chi"
 	"github.com/sknv/chip"
 	"github.com/sknv/chip/render"
 	"github.com/sknv/chip/validate"
-	"github.com/sknv/pgup"
-	"upper.io/db.v3"
+	"github.com/sknv/mng"
 
 	"github.com/sknv/chipapp/src/apps/api/forms"
 	"github.com/sknv/chipapp/src/lib/models"
@@ -22,10 +21,10 @@ type User struct {
 	userRepository *repositories.User
 }
 
-func NewUser(session db.Database, validate *validate.Validate) *User {
+func NewUser(validate *validate.Validate) *User {
 	return &User{
 		Base:           NewBase(validate),
-		userRepository: repositories.NewUser(session),
+		userRepository: repositories.NewUser(),
 	}
 }
 
@@ -36,16 +35,19 @@ func (c *User) Index(w http.ResponseWriter, r *http.Request) {
 		render.Status(w, http.StatusBadRequest)
 		chip.AbortHandler()
 	}
+	mgoSession := mng.GetMgoSessionForRequest(r)
 
 	// Fetch and paginate users.
-	users, err := c.userRepository.FindPage(fp.PagingParams, fp.Query)
+	users, err := c.userRepository.FindPage(mgoSession, fp.Query, fp.PagingParams)
 	chip.PanicIfError(err)
 	render.Json(w, http.StatusOK, users)
 }
 
 func (c *User) Show(w http.ResponseWriter, r *http.Request) {
+	mgoSession := mng.GetMgoSessionForRequest(r)
+
 	// Fetch the user by id.
-	user := c.fetchUser(w, r)
+	user := c.fetchUser(w, r, mgoSession)
 	render.Json(w, http.StatusOK, user)
 }
 
@@ -58,36 +60,38 @@ func (c *User) Create(w http.ResponseWriter, r *http.Request) {
 	userForm.FillModel(user)
 
 	// Insert model to the db.
-	id, err := c.userRepository.Insert(user)
+	mgoSession := mng.GetMgoSessionForRequest(r)
+	err := c.userRepository.Insert(mgoSession, user)
 
 	// Check the violation of unique indexes and panic in case of other error.
-	if pgup.IsPgDup(err) {
+	if mgo.IsDup(err) {
 		render.Plain(w, http.StatusUnprocessableEntity, err.Error())
 		chip.AbortHandler()
 	}
 	chip.PanicIfError(err)
 
-	user.Id = id
 	render.Json(w, http.StatusCreated, user)
 }
 
 func (c *User) Update(w http.ResponseWriter, r *http.Request) {
+	mgoSession := mng.GetMgoSessionForRequest(r)
+
 	// Fetch the user by id.
-	user := c.fetchUser(w, r)
+	user := c.fetchUser(w, r, mgoSession)
 
 	// Bind the request body to a user form and validate it.
 	userForm := c.bindRequestToUserForm(w, r)
 
 	// Fill the model and update the db.
 	userForm.FillModel(user)
-	err := c.userRepository.UpdateRecord(user)
+	err := c.userRepository.UpdateDoc(mgoSession, user)
 
 	// Check the document existence, violation of unique indexes
 	// and panic in case of other error.
-	if pgup.IsErrNoMoreRows(err) {
+	if mng.IsErrNotFound(err) {
 		render.Status(w, http.StatusNotFound)
 		chip.AbortHandler()
-	} else if pgup.IsPgDup(err) {
+	} else if mgo.IsDup(err) {
 		render.Plain(w, http.StatusUnprocessableEntity, err.Error())
 		chip.AbortHandler()
 	}
@@ -97,12 +101,14 @@ func (c *User) Update(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *User) Destroy(w http.ResponseWriter, r *http.Request) {
+	mgoSession := mng.GetMgoSessionForRequest(r)
+
 	// Fetch the user by id and remote it.
-	user := c.fetchUser(w, r)
-	err := c.userRepository.DeleteRecord(user)
+	user := c.fetchUser(w, r, mgoSession)
+	err := c.userRepository.RemoveDoc(mgoSession, user)
 
 	// Check the document existence and panic in case of other error.
-	if pgup.IsErrNoMoreRows(err) {
+	if mng.IsErrNotFound(err) {
 		render.Status(w, http.StatusNotFound)
 		chip.AbortHandler()
 	}
@@ -112,17 +118,15 @@ func (c *User) Destroy(w http.ResponseWriter, r *http.Request) {
 }
 
 // fetchUser fetches the user by id, panics in case of error.
-func (c *User) fetchUser(w http.ResponseWriter, r *http.Request) *models.User {
-	// Get url parameter from request.
-	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
-	if err != nil {
-		render.Status(w, http.StatusBadRequest)
-		chip.AbortHandler()
-	}
+func (c *User) fetchUser(
+	w http.ResponseWriter, r *http.Request, session *mgo.Session,
+) *models.User {
+	// Get url parameter 'id' from request.
+	id := chi.URLParam(r, "id")
 
 	// Check the document existence and panic in case of other error.
-	user, err := c.userRepository.FindOneById(id)
-	if pgup.IsErrNoMoreRows(err) {
+	user, err := c.userRepository.FindOneById(session, id)
+	if mng.IsErrNotFound(err) {
 		render.Status(w, http.StatusNotFound)
 		chip.AbortHandler()
 	}

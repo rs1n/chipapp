@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
-# Bootstraps test PostgreSQL database.
+# Bootstraps the test Mongo database.
 
-goose \
-  -dir ./migrate \
-  postgres \
-  "dbname=demotest user=demotest password=123 sslmode=disable" \
-  up
+mongo demotest \
+  --authenticationDatabase "demotest" -u "demotest" -p "123" \
+  ./bootstrap.js

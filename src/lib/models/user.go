@@ -1,16 +1,25 @@
 package models
 
-import "upper.io/db.v3/postgresql"
+type (
+	Image struct {
+		Src   string `json:"src"`
+		Style string `json:"style"`
+	}
 
-type User struct {
-	Base `db:",inline"`
+	Profile struct {
+		Name string `json:"name"`
+	}
 
-	Email   string           `db:"email" json:"email"`
-	Profile postgresql.JSONB `db:"profile" json:"profile"` // Embeds one profile.
-	Images  postgresql.JSONB `db:"images" json:"images"`   // Embeds many images.
-	// FollowerIds []string `json:"follower_ids"` // Has and belongs to many users.
+	User struct {
+		Base `bson:",inline"`
 
-	// Virtual fields.
-	//Followers  []*User      `json:"followers,omitempty"`  // Has and belongs to many users.
-	Microposts []*Micropost `json:"microposts,omitempty"` // Has many microposts.
-}
+		Email       string   `json:"email"`
+		Profile     Profile  `json:"profile"`                          // Embeds one profile.
+		Images      []*Image `json:"images"`                           // Embeds many images.
+		FollowerIds []string `bson:"follower_ids" json:"follower_ids"` // Has and belongs to many users.
+
+		// Virtual fields.
+		Followers  []*User      `bson:"-" json:"followers,omitempty"`  // Has and belongs to many users.
+		Microposts []*Micropost `bson:"-" json:"microposts,omitempty"` // Has many microposts.
+	}
+)

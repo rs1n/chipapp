@@ -1,8 +1,9 @@
 package repositories
 
 import (
-	"github.com/sknv/pgup/orm/repository"
-	"upper.io/db.v3"
+	"github.com/globalsign/mgo"
+	"github.com/globalsign/mgo/bson"
+	"github.com/sknv/mng/odm/repository"
 )
 
 // Base application repository.
@@ -10,33 +11,27 @@ type Base struct {
 	*repository.Base
 }
 
-func NewBase(session db.Database, collectionName string) *Base {
+func NewBase(collectionName string) *Base {
 	return &Base{
 		Base: &repository.Base{
-			Session:        session,
 			CollectionName: collectionName,
 		},
 	}
 }
 
 func (r *Base) FindPage(
-	dest interface{}, params repository.PagingParams, query ...interface{},
+	session *mgo.Session, query bson.M, params repository.PagingParams,
+	result interface{},
 ) error {
-	res := r.Base.FindPage(params, query...)
-	err := res.All(dest)
+	qry := r.Base.FindPage(session, query, params)
+	err := qry.All(result)
 	return err
 }
 
-func (r *Base) FindOneById(dest interface{}, id int64) error {
-	res := r.Base.Find("id", id)
-	err := res.One(dest)
+func (r *Base) FindOneById(
+	session *mgo.Session, id string, result interface{},
+) error {
+	qry := r.Base.Find(session, bson.M{"_id": bson.ObjectIdHex(id)})
+	err := qry.One(result)
 	return err
-}
-
-func (r *Base) Insert(record interface{}) (int64, error) {
-	id, err := r.Base.Insert(record)
-	if err != nil {
-		return 0, err
-	}
-	return id.(int64), nil
 }

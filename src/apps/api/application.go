@@ -3,7 +3,6 @@ package api
 import (
 	"github.com/go-chi/chi"
 	"github.com/sknv/chip/validate"
-	"upper.io/db.v3"
 
 	"github.com/sknv/chipapp/src/apps"
 	"github.com/sknv/chipapp/src/apps/api/controllers"
@@ -18,12 +17,10 @@ type Application struct {
 	userController *controllers.User
 }
 
-func NewApplication(
-	session db.Database, validate *validate.Validate,
-) *Application {
+func NewApplication(validate *validate.Validate) *Application {
 	return &Application{
 		pingController: controllers.NewPing(validate),
-		userController: controllers.NewUser(session, validate),
+		userController: controllers.NewUser(validate),
 	}
 }
 

@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
-# Bootstraps development PostgreSQL database.
+# Bootstraps the development Mongo database.
 
-goose \
-  -dir ./migrate \
-  postgres \
-  "dbname=demodev user=demodev password=123 sslmode=disable" \
-  up
+mongo demodev \
+  --authenticationDatabase "demodev" -u "demodev" -p "123" \
+  ./bootstrap.js

@@ -3,7 +3,7 @@ package config
 import (
 	"os"
 
-	"upper.io/db.v3/postgresql"
+	"github.com/globalsign/mgo"
 )
 
 const (
@@ -18,7 +18,7 @@ type Config struct {
 	IsDebug bool
 	Port    int
 
-	Postgres *postgresql.ConnectionURL
+	Mongo *mgo.DialInfo
 }
 
 func NewConfig() *Config {
