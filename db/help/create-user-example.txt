@@ -1,0 +1,7 @@
+# An example of usage of create-user.sh script.
+# Creates a user with password "qweasd".
+
+GONQ_DATABASE_NAME=gonqdev \
+  GONQ_DATABASE_PASSWORD=123 \
+  GONQ_USER_PASSWORD_HASH=$2a$10$RRub6AWaGLYZXbSuKZz9TulP0G1MG02hUQnjgdqHXnTCXIeukMU7e \
+  bash ./create-user.sh

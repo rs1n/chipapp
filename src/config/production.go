@@ -8,8 +8,9 @@ import (
 )
 
 var production = Config{
-	IsDebug: false,
-	Port:    3000,
+	IsDebug:   false,
+	Port:      3000,
+	SecretKey: []byte(os.Getenv(envVarSecretKey)),
 
 	Mongo: &mgo.DialInfo{
 		Addrs:    []string{"localhost:27017"},

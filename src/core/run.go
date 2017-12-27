@@ -24,28 +24,26 @@ func Run() {
 	cfg := config.NewConfig()
 
 	// Create an application's global context and schedule a cleaning.
-	serviceProvider := initServiceProvider(cfg)
-	defer serviceProvider.CleanUp()
+	objectProvider := initObjectProvider(cfg)
+	defer objectProvider.CleanUp()
 
 	// Create and bootstrap a router.
 	router := chi.NewRouter()
-	bootstrapRouter(router, serviceProvider.MgoSession)
+	bootstrapRouter(router, objectProvider.MgoSession)
 
 	// Dispatch requests and serve the router on specified port.
-	NewDispatcher(
-		serviceProvider.HtmlRender, serviceProvider.Validate,
-	).Dispatch(router)
+	NewDispatcher(objectProvider).Dispatch(router)
 	xhttp.Serve(router, cfg.Port, shutdownTimeout)
 }
 
-// initServiceProvider creates a new application's global context.
-func initServiceProvider(cfg *config.Config) *ServiceProvider {
+// initObjectProvider creates a new application's global context.
+func initObjectProvider(config *config.Config) *ObjectProvider {
 	hrp := HtmlRenderParams{
-		IsDebug:      cfg.IsDebug,
+		IsDebug:      config.IsDebug,
 		TemplateRoot: templateRoot,
 		TemplateExt:  templateExt,
 	}
-	return NewServiceProvider(hrp, cfg.Mongo)
+	return NewObjectProvider(hrp, config)
 }
 
 // bootstrapRouter plugs standard middleware, provides a Mongo session

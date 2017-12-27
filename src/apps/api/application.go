@@ -2,45 +2,42 @@ package api
 
 import (
 	"github.com/go-chi/chi"
-	"github.com/sknv/chip/validate"
 
-	"github.com/sknv/chipapp/src/apps"
 	"github.com/sknv/chipapp/src/apps/api/controllers"
 )
 
 const scope = "/api"
 
 type Application struct {
-	apps.Application
-
-	pingController *controllers.Ping
-	userController *controllers.User
-}
-
-func NewApplication(validate *validate.Validate) *Application {
-	return &Application{
-		pingController: controllers.NewPing(validate),
-		userController: controllers.NewUser(validate),
-	}
+	PingCtrl    *controllers.Ping    `inject:""`
+	SessionCtrl *controllers.Session `inject:""`
+	UserCtrl    *controllers.User    `inject:""`
 }
 
 func (a *Application) Route(r chi.Router) {
 	r.Route(scope, func(r chi.Router) {
 		a.routePing(r)
+		a.routeSession(r)
 		a.routeUser(r)
 	})
 }
 
 func (a *Application) routePing(r chi.Router) {
-	r.Get("/ping", a.pingController.Index)
+	r.Get("/ping", a.PingCtrl.Index)
+}
+
+func (a *Application) routeSession(r chi.Router) {
+	r.Route("/login", func(router chi.Router) {
+		router.Post("/", a.SessionCtrl.Login)
+	})
 }
 
 func (a *Application) routeUser(r chi.Router) {
 	r.Route("/users", func(router chi.Router) {
-		router.Get("/", a.userController.Index)
-		router.Get("/{id}", a.userController.Show)
-		router.Post("/", a.userController.Create)
-		router.Put("/{id}", a.userController.Update)
-		router.Delete("/{id}", a.userController.Destroy)
+		router.Get("/", a.UserCtrl.Index)
+		router.Get("/{id}", a.UserCtrl.Show)
+		router.Post("/", a.UserCtrl.Create)
+		router.Put("/{id}", a.UserCtrl.Update)
+		router.Delete("/{id}", a.UserCtrl.Destroy)
 	})
 }

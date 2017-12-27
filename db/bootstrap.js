@@ -4,4 +4,8 @@
 // Create indexes.
 //
 
-db.users.createIndex({ "email": 1 }, { unique: true });
+db.users.createIndex({ login: 1 }, { unique: true });
+
+//
+// Seed the db.
+//

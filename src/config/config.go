@@ -12,11 +12,13 @@ const (
 
 	envVarName       = "CHIP_ENV"
 	envVarDbPassword = "CHIPAPP_DATABASE_PASSWORD"
+	envVarSecretKey  = "CHIPAPP_SECRET_KEY"
 )
 
 type Config struct {
-	IsDebug bool
-	Port    int
+	IsDebug   bool
+	Port      int
+	SecretKey []byte
 
 	Mongo *mgo.DialInfo
 }

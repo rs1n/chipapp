@@ -7,8 +7,9 @@ import (
 )
 
 var test = Config{
-	IsDebug: true,
-	Port:    3000,
+	IsDebug:   true,
+	Port:      3000,
+	SecretKey: []byte("JjceTG4Hzfg7csHv"),
 
 	Mongo: &mgo.DialInfo{
 		Addrs:    []string{"localhost:27017"},

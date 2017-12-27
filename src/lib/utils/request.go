@@ -1,4 +1,4 @@
-package services
+package utils
 
 import (
 	"net/http"
@@ -16,24 +16,18 @@ const (
 	queryParamName = "query"
 )
 
-type (
-	FetchingParams struct {
-		Query        bson.M
-		PagingParams repository.PagingParams
-	}
+type FetchingParams struct {
+	Query        bson.M
+	PagingParams repository.PagingParams
+}
 
-	Request struct{}
-)
-
-func (_ *Request) GetFetchingParamsForRequest(
-	r *http.Request,
-) (*FetchingParams, error) {
+func GetFetchingParams(w http.ResponseWriter, r *http.Request) *FetchingParams {
 	params := r.URL.Query()
 
 	// Parse query or use an empty one.
 	query, err := mng.ParseQuery(params.Get(queryParamName))
 	if err != nil {
-		return nil, err
+		RenderStatusAndAbort(w, http.StatusBadRequest)
 	}
 
 	// Parse 'limit' and 'skip' parameters.
@@ -43,7 +37,7 @@ func (_ *Request) GetFetchingParamsForRequest(
 	}
 	limit, err := strconv.Atoi(sLimit)
 	if err != nil {
-		return nil, err
+		RenderStatusAndAbort(w, http.StatusBadRequest)
 	}
 
 	sSkip := params.Get(skipParamName)
@@ -52,16 +46,16 @@ func (_ *Request) GetFetchingParamsForRequest(
 	}
 	skip, err := strconv.Atoi(sSkip)
 	if err != nil {
-		return nil, err
+		RenderStatusAndAbort(w, http.StatusBadRequest)
 	}
 
 	// Parse sort or use an empty one.
 	sort, err := mng.ParseSort(params.Get(sortParamName))
 	if err != nil {
-		return nil, err
+		RenderStatusAndAbort(w, http.StatusBadRequest)
 	}
 
-	result := &FetchingParams{
+	return &FetchingParams{
 		Query: query,
 		PagingParams: repository.PagingParams{
 			Limit: limit,
@@ -69,5 +63,4 @@ func (_ *Request) GetFetchingParamsForRequest(
 			Sort:  sort,
 		},
 	}
-	return result, nil
 }
