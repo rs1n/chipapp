@@ -1,17 +1,19 @@
 package forms
 
 import (
+	"log"
 	"net/http"
 	"strings"
 
+	"github.com/sknv/chip/validate"
 	"github.com/sknv/chipapp/src/lib/models"
 	"github.com/sknv/chipapp/src/lib/utils"
 )
 
 type (
-	User struct {
-		Login       string          `json:"login" validate:"required,lte=100"`
-		Password    string          `json:"password" validate:"required,gte=6"`
+	UserForm struct {
+		Login       string          `json:"login" validate:"present,lte=100"`
+		Password    string          `json:"password" validate:"present,gte=6"`
 		Profile     Profile         `json:"profile"`      // Embeds one profile.
 		Images      []*models.Image `json:"images"`       // Embeds many images.
 		FollowerIds []string        `json:"follower_ids"` // Has and belongs to many users.
@@ -24,9 +26,16 @@ type (
 	}
 )
 
-func (f *User) FillModel(w http.ResponseWriter, user *models.User) {
+func GetUserDupErrorMessage() validate.ValidationErrors {
+	return validate.ValidationErrors{
+		"UserForm.login": "already exists",
+	}
+}
+
+func (f *UserForm) FillModel(w http.ResponseWriter, user *models.User) {
 	password, err := utils.HashPassword(f.Password)
 	if err != nil {
+		log.Print("error: ", err)
 		utils.RenderStatusAndAbort(w, http.StatusBadRequest)
 	}
 

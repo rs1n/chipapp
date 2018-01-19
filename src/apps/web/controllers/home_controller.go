@@ -7,11 +7,15 @@ import (
 	"github.com/sknv/chip/render"
 )
 
-type Home struct {
-	*Base `inject:""`
+type HomeController struct {
+	*BaseController
 }
 
-func (c *Home) Index(w http.ResponseWriter, r *http.Request) {
+func NewHomeController() *HomeController {
+	return &HomeController{NewBaseController()}
+}
+
+func (c *HomeController) Index(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
 	if name == "" {
 		name = "world"
