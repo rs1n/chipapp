@@ -2,29 +2,25 @@ package core
 
 import (
 	"github.com/go-chi/chi"
-	"github.com/sknv/chip"
 
 	"github.com/sknv/chipapp/src/apps/api"
 	"github.com/sknv/chipapp/src/apps/web"
 )
 
 type Dispatcher struct {
-	ApiApp *api.Application `inject:""`
-	WebApp *web.Application `inject:""`
+	ApiApp *api.Application
+	WebApp *web.Application
 }
 
-func NewDispatcher(objectProvider *ObjectProvider) *Dispatcher {
-	dispatcher := &Dispatcher{}
-	err := Inject(dispatcher, objectProvider.Objects...)
-	chip.PanicIfError(err)
-
-	// TODO: init applications if needed.
-
-	return dispatcher
+func NewDispatcher() *Dispatcher {
+	return &Dispatcher{
+		ApiApp: api.NewApplication(),
+		WebApp: web.NewApplication(),
+	}
 }
 
 // Dispatch dispatches incoming requests.
-func (d *Dispatcher) Dispatch(r chi.Router) {
-	d.ApiApp.Route(r)
-	d.WebApp.Route(r)
+func (d *Dispatcher) Dispatch(router chi.Router) {
+	d.ApiApp.Route(router)
+	d.WebApp.Route(router)
 }

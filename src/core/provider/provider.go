@@ -1,4 +1,4 @@
-package core
+package provider
 
 import (
 	"log"
@@ -9,8 +9,9 @@ import (
 	"github.com/sknv/mng"
 
 	"github.com/sknv/chipapp/src/config"
-	"github.com/sknv/chipapp/src/lib/repositories"
 )
+
+var objectProvider *ObjectProvider
 
 type (
 	HtmlRenderParams struct {
@@ -20,33 +21,38 @@ type (
 	}
 
 	ObjectProvider struct {
+		Config     *config.Config
+		HtmlRender *render.Html
 		MgoSession *mgo.Session
-
-		// Dependencies to be injected.
-		Objects []interface{}
+		Validate   *validate.Validate
 	}
 )
 
+func GetObjectProvider() *ObjectProvider {
+	if objectProvider == nil {
+		panic("objectProvider is not initialized")
+	}
+	return objectProvider
+}
+
 func NewObjectProvider(hrp HtmlRenderParams, config *config.Config) *ObjectProvider {
+	if objectProvider != nil {
+		panic("objectProvider is already initialized")
+	}
+
 	htmlRender := &render.Html{
 		IsDebug:      hrp.IsDebug,
 		TemplateRoot: hrp.TemplateRoot,
 		TemplateExt:  hrp.TemplateExt,
 	}
-	mgoSession := mng.MustDial(config.Mongo)
 
-	// TODO: Provide complete dependencies to be injected here.
-	objects := []interface{}{
-		config,
-		htmlRender,
-		validate.NewValidate(nil),
-		repositories.NewUser(),
+	objectProvider = &ObjectProvider{
+		Config:     config,
+		HtmlRender: htmlRender,
+		MgoSession: mng.MustDial(config.Mongo),
+		Validate:   validate.NewValidate(nil), // Use a validator with the default translator.
 	}
-
-	return &ObjectProvider{
-		Objects:    objects,
-		MgoSession: mgoSession,
-	}
+	return objectProvider
 }
 
 func (op *ObjectProvider) CleanUp() {

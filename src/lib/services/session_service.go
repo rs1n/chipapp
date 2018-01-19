@@ -2,16 +2,15 @@ package services
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/sknv/chip"
-	mnware "github.com/sknv/mng/middleware"
+	"github.com/sknv/mng/odm/document"
 
 	"github.com/sknv/chipapp/src/lib/middleware"
-	"github.com/sknv/chipapp/src/lib/models"
-	"github.com/sknv/chipapp/src/lib/repositories"
 	"github.com/sknv/chipapp/src/lib/utils"
 )
 
@@ -23,22 +22,30 @@ const (
 )
 
 type (
-	Session struct {
-		UserRepo *repositories.User `inject:""`
+	SessionService struct {
+		UserFinder IUserFinderById
 	}
 
 	Authentication struct {
-		AuthToken string       `json:"auth_token"`
-		User      *models.User `json:"user"`
+		AuthToken string               `json:"auth_token"`
+		User      document.IIdentifier `json:"user"`
+	}
+
+	IUserFinderById interface {
+		FindOneById(*http.Request, string) (interface{}, error)
 	}
 )
 
-func (_ *Session) CreateAuthentication(
-	user *models.User, signingKey []byte,
+func NewSessionService(userFinder IUserFinderById) *SessionService {
+	return &SessionService{userFinder}
+}
+
+func (_ *SessionService) CreateAuthentication(
+	user document.IIdentifier, signingKey []byte,
 ) *Authentication {
 	authToken, err := utils.CreateJwt(signingKey, jwt.MapClaims{
 		"exp":     time.Now().Add(sessionExpiresIn).Unix(),
-		"user_id": user.Id,
+		"user_id": user.GetId(),
 	})
 	chip.PanicIfError(err)
 
@@ -49,33 +56,30 @@ func (_ *Session) CreateAuthentication(
 	return auth
 }
 
-func (s *Session) IsLoggedIn(w http.ResponseWriter, r *http.Request) bool {
-	currentUser, _ := s.GetCurrentUser(w, r)
-	return currentUser != nil
-}
-
-func (s *Session) GetCurrentUser(
+func (s *SessionService) GetCurrentUser(
 	w http.ResponseWriter, r *http.Request,
-) (*models.User, *http.Request) {
-	currentUser, ok := r.Context().Value(ctxKeyCurrentUser).(*models.User)
-	if ok {
+) (interface{}, *http.Request) {
+	currentUser := r.Context().Value(ctxKeyCurrentUser)
+	if currentUser != nil {
 		return currentUser, r
 	}
 
 	claims, ok := middleware.GetJwtClaims(r)
 	if !ok {
-		utils.RenderStatusAndAbort(w, http.StatusUnauthorized)
+		log.Print("info: jwt claims do not exist")
+		return nil, r
 	}
 
 	userId, ok := claims["user_id"].(string)
-	if !ok {
-		utils.RenderStatusAndAbort(w, http.StatusUnauthorized)
+	if !ok || userId == "" {
+		log.Print("error: user id does not exist in jwt claims")
+		return nil, r
 	}
 
-	mgoSession := mnware.GetMgoSession(r)
-	currentUser, err := s.UserRepo.FindOneById(mgoSession, userId)
+	currentUser, err := s.UserFinder.FindOneById(r, userId)
 	if err != nil {
-		utils.RenderStatusAndAbort(w, http.StatusUnauthorized)
+		log.Print("error: ", err)
+		return nil, r
 	}
 
 	// Cache current user for request.

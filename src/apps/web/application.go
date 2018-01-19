@@ -7,10 +7,16 @@ import (
 )
 
 type Application struct {
-	HomeCtrl *controllers.Home `inject:""`
+	HomeCtrl *controllers.HomeController
 }
 
-func (a *Application) Route(r chi.Router) {
-	r.Get("/", a.HomeCtrl.Index)
-	r.Get("/hello/{name}", a.HomeCtrl.Index)
+func NewApplication() *Application {
+	return &Application{
+		HomeCtrl: controllers.NewHomeController(),
+	}
+}
+
+func (a *Application) Route(router chi.Router) {
+	router.Get("/", a.HomeCtrl.Index)
+	router.Get("/hello/{name}", a.HomeCtrl.Index)
 }

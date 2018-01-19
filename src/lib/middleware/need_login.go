@@ -15,7 +15,7 @@ type ctxKey string
 
 const ctxKeyJwtClaims = ctxKey("_jwt.Claims")
 
-func RequireLogin(signingKey []byte) func(next http.Handler) http.Handler {
+func NeedLogin(signingKey []byte) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		fn := func(w http.ResponseWriter, r *http.Request) {
 			tokenString := tokenFromHeader(r)

@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 
@@ -27,6 +28,7 @@ func GetFetchingParams(w http.ResponseWriter, r *http.Request) *FetchingParams {
 	// Parse query or use an empty one.
 	query, err := mng.ParseQuery(params.Get(queryParamName))
 	if err != nil {
+		log.Print("error: ", err)
 		RenderStatusAndAbort(w, http.StatusBadRequest)
 	}
 
@@ -37,6 +39,7 @@ func GetFetchingParams(w http.ResponseWriter, r *http.Request) *FetchingParams {
 	}
 	limit, err := strconv.Atoi(sLimit)
 	if err != nil {
+		log.Print("error: ", err)
 		RenderStatusAndAbort(w, http.StatusBadRequest)
 	}
 
@@ -46,12 +49,7 @@ func GetFetchingParams(w http.ResponseWriter, r *http.Request) *FetchingParams {
 	}
 	skip, err := strconv.Atoi(sSkip)
 	if err != nil {
-		RenderStatusAndAbort(w, http.StatusBadRequest)
-	}
-
-	// Parse sort or use an empty one.
-	sort, err := mng.ParseSort(params.Get(sortParamName))
-	if err != nil {
+		log.Print("error: ", err)
 		RenderStatusAndAbort(w, http.StatusBadRequest)
 	}
 
@@ -60,7 +58,7 @@ func GetFetchingParams(w http.ResponseWriter, r *http.Request) *FetchingParams {
 		PagingParams: repository.PagingParams{
 			Limit: limit,
 			Skip:  skip,
-			Sort:  sort,
+			Sort:  params[sortParamName],
 		},
 	}
 }
